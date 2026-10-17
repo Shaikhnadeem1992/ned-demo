@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06090F"><title>NED — Energy Core Demo</title>
+<link rel="stylesheet" href="style.css"></head><body>
+<header class="top">
+  <div><h1>NED</h1><div class="status"><span id="statusText">Ready</span> • <span id="netText">Online</span></div></div>
+  <div class="chips" aria-label="Privacy status">
+    <span id="micChip" class="chip off" role="status"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg><b id="micText">Mic off</b></span>
+    <span class="chip off"><svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"/></svg><b>Camera off</b></span>
+    <span id="fpsChip" class="chip info" hidden>— fps</span>
+  </div>
+</header>
+<main class="layout">
+  <aside class="side left" id="leftSide">
+    <section class="card" id="convCard"><h2>Conversation</h2><div id="conv" class="conv"><p class="sys">Tap Talk to speak to NED. The microphone only turns on after you tap.</p></div></section>
+    <section class="card" id="taskCard"><h2>Task status</h2><div id="taskStatus" class="muted">No task running.</div>
+      <div class="bar" id="taskBarWrap" hidden><div id="taskBar"></div></div>
+      <div class="row"><button id="runTask" class="btn">Run demo task</button><button id="simErr" class="btn ghost">Simulate error</button></div></section>
+  </aside>
+  <section class="stage">
+    <canvas id="core" aria-hidden="true"></canvas>
+    <div class="stateLabel" id="stateLabel" role="status" aria-live="polite"><span id="stateIcon">●</span> <span id="stateText">Ready</span></div>
+    <div class="caption" id="caption"></div>
+  </section>
+  <aside class="side right" id="rightSide">
+    <section class="card" id="controlCard"><h2>Control</h2>
+      <div class="setting"><label for="rm">Reduce Motion</label><input type="checkbox" id="rm" role="switch"></div>
+      <div class="setting"><label for="qual">Quality</label><select id="qual"><option value="auto">Auto</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+      <div class="setting"><label for="showFps">Show FPS</label><input type="checkbox" id="showFps" role="switch"></div>
+      <div class="muted small" id="tierInfo"></div>
+      <h3>Developer state picker</h3><div class="picker" id="picker"></div>
+      <h3>Tools &amp; More</h3><div class="muted small">Integrations, voice preferences and permissions live in the full NED app; not part of this visual demo.</div>
+    </section>
+    <section class="card" id="compactCard"><h2>Compact preview</h2>
+      <div class="compactRow" id="compact40"></div><div class="compactRow" id="compact24"></div>
+      <h3>Dynamic Island strip (mock)</h3><div class="island" id="island"></div>
+      <p class="muted small">Static compact variants. Real Dynamic Island / Lock Screen presentations need a native iOS app with ActivityKit Live Activities (not possible in this web demo). Compact previews hide private content by default.</p>
+    </section>
+  </aside>
+</main>
+<div class="overlay" id="overlay" hidden><div class="sheet card" id="sheet" role="dialog" aria-modal="true"></div></div>
+<nav class="dock" aria-label="Primary controls">
+  <button data-tab="camera"><svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"/></svg>Camera</button>
+  <button data-tab="create"><svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>Create</button>
+  <button id="talk" class="talk" aria-pressed="false"><span class="talkBtn"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg></span><span id="talkText">Talk</span></button>
+  <button data-tab="missions"><svg viewBox="0 0 24 24"><path d="M4 5h16v2H4zm0 6h16v2H4zm0 6h10v2H4z"/></svg>Missions</button>
+  <button data-tab="control"><svg viewBox="0 0 24 24"><path d="M3 7h10v2H3zm14 0h4v2h-4zm-2-2h2v6h-2zM3 15h4v2H3zm8 0h10v2H11zm-2-2h2v6H9z"/></svg>Control</button>
+</nav>
+<script type="module" src="js/app.js"></script></body></html>
