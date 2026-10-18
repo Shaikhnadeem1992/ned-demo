@@ -1,6 +1,10 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#06090F"><title>NED — Energy Core Demo</title>
+<meta name="theme-color" content="#06090F"><title>NED</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="NED">
 <link rel="stylesheet" href="style.css"></head><body>
 <header class="top">
   <div><h1>NED</h1><div class="status"><span id="statusText">Ready</span> • <span id="netText">Online</span></div></div>
@@ -52,4 +56,5 @@
   <button data-tab="missions"><svg viewBox="0 0 24 24"><path d="M4 5h16v2H4zm0 6h16v2H4zm0 6h10v2H4z"/></svg>Missions</button>
   <button data-tab="control"><svg viewBox="0 0 24 24"><path d="M3 7h10v2H3zm14 0h4v2h-4zm-2-2h2v6h-2zM3 15h4v2H3zm8 0h10v2H11zm-2-2h2v6H9z"/></svg>Control</button>
 </nav>
-<script type="module" src="js/app.js"></script></body></html>
+<script type="module" src="js/app.js"></script>
+<script>if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(()=>{});</script></body></html>
