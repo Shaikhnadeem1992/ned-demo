@@ -42,3 +42,10 @@ input[type=checkbox]{accent-color:var(--p);width:20px;height:20px}
 .sheet.approval{border-color:var(--p);box-shadow:0 0 0 1px var(--p),0 10px 40px #000}.sheet.error{border-color:var(--red)}
 .errHead{display:flex;gap:8px;align-items:center;color:var(--red);font-weight:700}
 @media (min-width:1000px){.side{display:block}.dock{justify-content:center;gap:40px}.dock button{flex:0 0 90px}.overlay{align-items:center}.sheet{margin-bottom:0}}
+
+.cmd{display:flex;gap:6px;width:100%;max-width:520px;padding:0 14px 8px}.cmd input{flex:1;min-width:0;background:#0b111b;border:1px solid #2a3344;color:var(--t);border-radius:12px;padding:9px 12px;font:inherit}
+.cmd input:focus{outline:none;border-color:var(--p)}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.toasts{position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:20;pointer-events:none}
+.toast{pointer-events:auto;width:min(92vw,380px);border-color:var(--p);display:flex;flex-direction:column;gap:6px}.timer{color:var(--core);font-variant-numeric:tabular-nums;margin-top:4px}
+#recogNote{text-align:center;padding:0 14px 6px}
+.conv p{flex-shrink:0}

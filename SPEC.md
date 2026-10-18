@@ -12,7 +12,9 @@ Palette: bg `#06090F`, panel `#111722`, primary `#FFB547`, core `#FFE7B0`, trail
 | `audio.js` | `AudioResponse`: mic RMS from a `getUserMedia` AnalyserNode (opened only after the user taps Talk; tracks are stopped when listening ends). Voice-output energy comes from an AnalyserNode on NED's synthesized output. Fast-attack / slow-release smoothing. |
 | `quality.js` | Quality tiers, Auto FPS adaptation, Reduce Motion (stored setting, or `prefers-reduced-motion` by default). |
 | `compact.js` | Static SVG compact core (centre + 1–2 arcs, no particles). |
-| `app.js` | UI wiring, demo flows, render loop, visibility pause. |
+| `brain.js` | Local rule-based intent engine (no network, no AI service). Normalizes text (number words become digits, punctuation is removed) and matches intents with regex and synonyms. Returns `{intent, reply, action}`. |
+| `speech.js` | `Recognizer` (Web Speech API `SpeechRecognition`/`webkitSpeechRecognition`, interim results) and `Speaker` (`speechSynthesis`, best-voice picker, voice/rate settings, safety timeout). |
+| `app.js` | UI wiring, conversation, timers/reminders, approval gating, render loop, visibility pause. |
 
 **Interpolation:** on every state change, the current parameter vector (speed, tight, bright, density, ripple, stream, breathe, chaos) is eased (cubic in-out) toward the new targets over 450 ms. **Ring angles are accumulated** (`angle += dt·speed·ringSpeed`) and are never reset, so rings keep turning from where they were and only their speed changes.
 
@@ -51,14 +53,26 @@ Components planned: Core/Full (8 state variants + reduced-motion variants), Core
 - **Needs runtime rendering:** particles, tapered trails, ripples, audio-reactive brightness, additive bloom, the accumulated ring rotation, and interpolation.
 - **Exportable as assets:** ring arc geometry (separate per layer, so each can be animated independently), the tick ring, the core glow texture, and the compact SVGs. An exported GLB will **not** reproduce the glow, particles or trails.
 
+## Voice assistant (local, no external AI/API)
+**Flow:** tap Talk → LISTENING (recognition runs; the live transcript shows in the caption) → final text → THINKING (only while `brain.processText` runs, a ~350 ms minimum window) → optional WORKING (timer start) / AWAITING APPROVAL (anything that opens a site) → SPEAKING (speechSynthesis) → IDLE. If recognition is unsupported, the typed command box is always available.
+
+**Intents:** greetings, small talk, identity, help; time, date, day; timers (real countdown in Task status, chime + toast + spoken alert); reminders ("in N minutes" / "at 5 pm", stored in localStorage; they fire only while the page is open); notes (add/read/clear, localStorage); math (+ − × ÷, powers, square root, "X percent of Y"); conversions (km↔mi, °C↔°F, kg↔lb, m↔ft, cm↔in); open websites (YouTube, Google, Maps, Gmail, Wikipedia, GitHub, X, …) and web search via Google; jokes/quotes (bundled); coin and dice; panel navigation (open missions/control/create/camera); sleep, wake, Reduce Motion on/off; stop/cancel (also cancels timers). Unknown requests get an honest reply plus an offer to search, and "yes" accepts the offer. **Every website open or search goes through the AWAITING APPROVAL card first.** The tab is opened inside the Approve tap so popup blockers allow it.
+
+**Mic and recognition on iOS:** running `getUserMedia` and `SpeechRecognition` together can conflict on iOS Safari, so on iOS the analyser is **not** opened. Ripples are driven by recognition events (sound start, interim results) instead. On desktop browsers both run, and the analyser RMS drives the ripples.
+
+**Speaking energy:** browsers do not expose `speechSynthesis` audio to WebAudio (iOS included), so the SPEAKING pulses are **not** a measurement of the voice signal. They come from a syllable-rate envelope that runs between utterance `start` and `end`, plus kicks on `boundary` (word) events. The earlier wordless tone has been removed.
+
 ## Honest implementation status
 | Item | Status |
 |---|---|
+| Speech-to-text | **Real**: Web Speech API. Chrome sends audio to Google's speech service and needs a connection. Safari uses Apple's on-device or Siri recognition. Not testable in headless Chromium |
+| Understanding | **Real but rule-based**: fixed intents only. There is no general knowledge, no memory beyond notes and reminders, and no LLM |
+| Text-to-speech | **Real** speechSynthesis with an OS voice. Quality depends on the installed voices (enhanced or premium Siri voices on iPhone sound best) |
+| Speaking pulses | Event- and envelope-driven, not real output audio (see above) |
+| Timers / reminders | Real, but they run only while the page is open. No background or push notifications |
 | Energy core renderer, 8 states, 450 ms interpolation, rotation continuity | **Real**, tested |
-| Listening response to microphone level | **Real** mic RMS (tested with Chromium's fake mic device) |
-| Speech-to-text | **Not included.** Input is recorded as a placeholder |
-| NED's reply voice | **Synthesized word-free tone sequence** (WebAudio) played through an AnalyserNode. The core reacts to that real output signal. It is not real TTS speech; the reply text is shown as a caption |
-| Thinking | A real `setTimeout` promise (simulated processing). No AI backend |
+| Listening response to microphone level | **Real** mic RMS on desktop browsers. On iOS it comes from recognition events |
+| Thinking | Shown while the local brain processes a command. The "Run demo task" flow is still simulated |
 | Demo task / approval | Simulated steps; nothing is sent anywhere |
 | Camera | Not connected; never activated |
 | Integrations, user data, permissions, voice prefs of the real NED app | Not present. The existing NED code was not provided, so face avatars in the real app have **not** been replaced yet |

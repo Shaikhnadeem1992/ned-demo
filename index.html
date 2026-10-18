@@ -12,15 +12,18 @@
 </header>
 <main class="layout">
   <aside class="side left" id="leftSide">
-    <section class="card" id="convCard"><h2>Conversation</h2><div id="conv" class="conv"><p class="sys">Tap Talk to speak to NED. The microphone only turns on after you tap.</p></div></section>
+    <section class="card" id="convCard"><h2>Conversation</h2><div id="conv" class="conv"><p class="sys">Tap Talk and speak, or type below. Try “what can you do”. The microphone only turns on after you tap.</p></div></section>
     <section class="card" id="taskCard"><h2>Task status</h2><div id="taskStatus" class="muted">No task running.</div>
-      <div class="bar" id="taskBarWrap" hidden><div id="taskBar"></div></div>
+      <div id="timers"></div><div id="reminders"></div><div class="bar" id="taskBarWrap" hidden><div id="taskBar"></div></div>
       <div class="row"><button id="runTask" class="btn">Run demo task</button><button id="simErr" class="btn ghost">Simulate error</button></div></section>
   </aside>
   <section class="stage">
     <canvas id="core" aria-hidden="true"></canvas>
     <div class="stateLabel" id="stateLabel" role="status" aria-live="polite"><span id="stateIcon">●</span> <span id="stateText">Ready</span></div>
     <div class="caption" id="caption"></div>
+    <div id="transcript" class="sr" aria-live="polite"></div>
+    <form id="cmdForm" class="cmd" autocomplete="off"><input id="cmd" type="text" placeholder="Type a command, e.g. “set a timer for 5 minutes”" aria-label="Type a command"><button class="btn" type="submit">Send</button></form>
+    <div id="recogNote" class="muted small"></div>
   </section>
   <aside class="side right" id="rightSide">
     <section class="card" id="controlCard"><h2>Control</h2>
@@ -28,6 +31,9 @@
       <div class="setting"><label for="qual">Quality</label><select id="qual"><option value="auto">Auto</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
       <div class="setting"><label for="showFps">Show FPS</label><input type="checkbox" id="showFps" role="switch"></div>
       <div class="muted small" id="tierInfo"></div>
+      <h3>Voice</h3><div class="setting"><label for="voice">Voice</label><select id="voice" style="max-width:180px"></select></div>
+      <div class="setting"><label for="rate">Rate <span id="rateVal"></span></label><input id="rate" type="range" min="0.6" max="1.6" step="0.1"></div>
+      <button class="btn ghost" id="testVoice">Test voice</button>
       <h3>Developer state picker</h3><div class="picker" id="picker"></div>
       <h3>Tools &amp; More</h3><div class="muted small">Integrations, voice preferences and permissions live in the full NED app; not part of this visual demo.</div>
     </section>
@@ -38,7 +44,7 @@
     </section>
   </aside>
 </main>
-<div class="overlay" id="overlay" hidden><div class="sheet card" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="toasts" class="toasts"></div><div class="overlay" id="overlay" hidden><div class="sheet card" id="sheet" role="dialog" aria-modal="true"></div></div>
 <nav class="dock" aria-label="Primary controls">
   <button data-tab="camera"><svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"/></svg>Camera</button>
   <button data-tab="create"><svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>Create</button>
